@@ -1,25 +1,26 @@
 # Etapa 1: Construção da aplicação
-FROM golang:1.23 AS builder 
+FROM golang:1.23 AS builder
 
-# Definir diretório de trabalho dentro do container
 WORKDIR /app
 
-# Copiar os arquivos do projeto
 COPY . .
 
-# Baixar dependências e compilar o binário
-RUN go mod tidy && go build -o server .
+# Compilar um binário estático para evitar problemas no Alpine
+RUN go mod tidy && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o server .
 
-# Etapa 2: Criar a imagem final minimalista
+# Etapa 2: Criar a imagem final mínima
 FROM alpine:latest
 
 WORKDIR /
 
-# Copiar o binário da etapa anterior
+# Copiar apenas o binário compilado
 COPY --from=builder /app/server /
 
-# Expor a porta usada pelo Cloud Run
+# Expor a porta correta
 EXPOSE 8080
 
-# Definir comando de inicialização do container
+# Definir variável de ambiente para Cloud Run
+ENV PORT=8080
+
+# Iniciar o servidor Go
 CMD ["/server"]
