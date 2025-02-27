@@ -1,5 +1,5 @@
 # Etapa 1: Construção da aplicação
-FROM golang:1.23.5 AS builder 
+FROM golang:1.23 AS builder 
 
 # Definir diretório de trabalho dentro do container
 WORKDIR /app
@@ -11,7 +11,7 @@ COPY . .
 RUN go mod tidy && go build -o server .
 
 # Etapa 2: Criar a imagem final minimalista
-FROM gcr.io/distroless/static-debian12
+FROM alpine:latest
 
 WORKDIR /
 
