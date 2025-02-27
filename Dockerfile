@@ -6,7 +6,7 @@ WORKDIR /app
 COPY . .
 
 # Compile o aplicativo Go
-RUN go build -o main ./cmd/server/main.go
+RUN go mod tidy && go build -o main .
 
 # Etapa 2: Criar a imagem final mínima
 FROM alpine:latest
