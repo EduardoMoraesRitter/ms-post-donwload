@@ -1,30 +1,25 @@
-# Etapa 1: Builder
-FROM golang:1.22.3-alpine AS builder
+# Usar uma imagem leve do Go
+FROM golang:1.21 as builder
 
-# Instale pacotes necessários para build
-RUN apk add --no-cache git
-
+# Criar diretório de trabalho
 WORKDIR /app
 
-# Copie o código fonte e outros arquivos necessários para o build
+# Copiar arquivos
 COPY . .
 
-# Compile o aplicativo Go
-RUN go build -o main ./main.go
+# Baixar dependências e compilar
+RUN go mod init hello && go mod tidy && go build -o server
 
-# Etapa 2: Imagem final
+# Criar imagem final
 FROM alpine:latest
 
-# Copie apenas o binário compilado da etapa anterior
-COPY --from=builder /app/main .
+WORKDIR /
 
-# Defina as variáveis de ambiente
-ENV PORT=8080
-ENV GIN_MODE=release
-ENV ENV=production
+# Copiar o binário compilado
+COPY --from=builder /app/server .
 
-# Exponha a porta
-EXPOSE ${PORT}
+# Expor a porta
+EXPOSE 8080
 
-# Comando para executar o binário
-CMD ["./main"]
+# Executar o binário
+CMD ["/server"]
