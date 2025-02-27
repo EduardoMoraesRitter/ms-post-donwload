@@ -1,9 +1,6 @@
 # Etapa 1: Construção da aplicação
 FROM golang:1.23 AS builder
 
-# Instale pacotes necessários para build
-RUN apk add --no-cache git
-
 WORKDIR /app
 
 COPY . .
@@ -15,7 +12,7 @@ RUN go mod tidy && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o server .
 FROM alpine:latest
 
 # Copie apenas o binário compilado da etapa anterior
-COPY --from=builder /app/server .
+COPY --from=builder /app/server /
 
 # Expor a porta correta
 EXPOSE 8080
