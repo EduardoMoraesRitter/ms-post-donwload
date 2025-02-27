@@ -1,5 +1,5 @@
 # Etapa 1: Construção da aplicação
-FROM golang:1.22 AS builder 
+FROM golang:1.23.5 AS builder 
 
 # Definir diretório de trabalho dentro do container
 WORKDIR /app
