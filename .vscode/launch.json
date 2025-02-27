@@ -1,0 +1,15 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Go",
+      "type": "go",
+      "request": "launch",
+      "mode": "auto",
+      "program": "${workspaceFolder}/main.go",  // Caminho para o main.go
+      "cwd": "${workspaceFolder}",                // Diretório de trabalho: raiz do projeto
+      "envFile": "${workspaceFolder}/.env",       // Caminho para o arquivo .env
+      "args": []
+    }
+  ]
+}
