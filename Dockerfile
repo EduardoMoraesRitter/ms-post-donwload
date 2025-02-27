@@ -1,25 +1,25 @@
-# Usar uma imagem leve do Go
-FROM golang:1.21 as builder
+# Etapa 1: Construção da aplicação
+FROM golang:1.21 AS builder
 
-# Criar diretório de trabalho
+# Definir diretório de trabalho dentro do container
 WORKDIR /app
 
-# Copiar arquivos
+# Copiar os arquivos do projeto
 COPY . .
 
-# Baixar dependências e compilar
-RUN go mod init hello && go mod tidy && go build -o server
+# Baixar dependências e compilar o binário
+RUN go mod tidy && go build -o server .
 
-# Criar imagem final
-FROM alpine:latest
+# Etapa 2: Criar a imagem final minimalista
+FROM gcr.io/distroless/static-debian12
 
 WORKDIR /
 
-# Copiar o binário compilado
-COPY --from=builder /app/server .
+# Copiar o binário da etapa anterior
+COPY --from=builder /app/server /
 
-# Expor a porta
+# Expor a porta usada pelo Cloud Run
 EXPOSE 8080
 
-# Executar o binário
+# Definir comando de inicialização do container
 CMD ["/server"]
