@@ -17,5 +17,8 @@ COPY --from=builder /app/main /
 # Expor a porta correta
 EXPOSE 8080
 
+# Definir variável de ambiente para Cloud Run
+ENV PORT=8080
+
 # Comando para executar o binário
 CMD ["./main"]
