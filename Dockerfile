@@ -14,5 +14,8 @@ FROM alpine:latest
 # Copie apenas o binário compilado da etapa anterior
 COPY --from=builder /app/main /
 
+# Expor a porta correta
+EXPOSE 8080
+
 # Comando para executar o binário
 CMD ["./main"]
