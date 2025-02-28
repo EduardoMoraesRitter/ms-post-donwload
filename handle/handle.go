@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"postDownload/configs"
+	"postDownload/data"
 	"postDownload/download"
 
 	"cloud.google.com/go/storage"
@@ -27,7 +28,7 @@ func HandleMediaDownload(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if requestData.MediaURL == "" || requestData.Channel == "" || requestData.CreatorID == 0 {
+	if requestData.MediaURL == "" || requestData.Channel == "" || requestData.CreatorID == 0 || requestData.PostID == "" {
 		http.Error(w, "Campos obrigatórios ausentes", http.StatusBadRequest)
 		return
 	}
@@ -55,8 +56,16 @@ func HandleMediaDownload(w http.ResponseWriter, r *http.Request) {
 	}
 	if exists {
 		log.Println("Arquivo já existe no Storage:", uri)
+
+		// 📌 **Atualiza o MongoDB com a URI do arquivo já existente**
+		if err := data.UpdateCreatorURI(requestData.PostID, uri); err != nil {
+			log.Println("Erro ao atualizar MongoDB:", err)
+			http.Error(w, "Erro ao atualizar MongoDB", http.StatusInternalServerError)
+			return
+		}
+
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(map[string]string{"message": "Arquivo já existe", "file_path": uri})
+		json.NewEncoder(w).Encode(map[string]string{"message": "Arquivo já existe e foi atualizado no MongoDB", "file_path": uri})
 		return
 	}
 
@@ -70,14 +79,22 @@ func HandleMediaDownload(w http.ResponseWriter, r *http.Request) {
 	// **Minifica o arquivo se necessário**
 	finalFilePath := download.MinifyVideo(filePath)
 
+	// **Faz o upload do arquivo para o Storage**
 	storageURI, err := download.UploadToStorage(client, finalFilePath, storagePath)
 	if err != nil {
 		http.Error(w, "Erro no upload", http.StatusInternalServerError)
 		return
 	}
 
+	// 📌 **Atualiza o MongoDB com a URI do novo arquivo**
+	if err := data.UpdateCreatorURI(requestData.PostID, storageURI); err != nil {
+		log.Println("Erro ao atualizar MongoDB:", err)
+		http.Error(w, "Erro ao atualizar MongoDB", http.StatusInternalServerError)
+		return
+	}
+
 	response := map[string]string{
-		"message":   "Upload concluído",
+		"message":   "Upload concluído e URI atualizada no MongoDB",
 		"file_path": storageURI,
 	}
 	w.Header().Set("Content-Type", "application/json")

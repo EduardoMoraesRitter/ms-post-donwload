@@ -9,15 +9,22 @@ import (
 )
 
 type Variables struct {
+	ProjectID                string `envconfig:"PROJECT_ID" required:"true" default:"brandlovrs-develop"`
+	Location                 string `envconfig:"LOCATION" required:"true" default:"us-central1"`
 	Port                     int    `envconfig:"PORT" required:"true" default:"8080"`
 	BucketSmartMatchCreators string `envconfig:"BUCKET_SMART_MATCH_CREATORS" required:"true" default:"smart_match_creators_test"`
-	Ctx                      context.Context
+	MongoURI                 string `envconfig:"MONGO_URI" required:"true" default:"mongodb+srv://bruno12leonel:6dQDwpKYWmxyCfMe@cluster-teste.czigp.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"`
+	MongoDatabase            string `envconfig:"MONGO_DATABASE" required:"true" default:"sample_mflix"`
+	MongoCollection          string `envconfig:"MONGO_COLLECTION" required:"true" default:"instagram-posts"`
+
+	Ctx context.Context
 }
 
 // Estrutura do JSON recebido no POST
 type MediaRequest struct {
 	Channel   string `json:"channel"`
 	CreatorID int    `json:"creator_id"`
+	PostID    string `json:"post_id"`
 	MediaURL  string `json:"media_url"`
 }
 
