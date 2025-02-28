@@ -14,6 +14,13 @@ type Variables struct {
 	Ctx                      context.Context
 }
 
+// Estrutura do JSON recebido no POST
+type MediaRequest struct {
+	Channel   string `json:"channel"`
+	CreatorID int    `json:"creator_id"`
+	MediaURL  string `json:"media_url"`
+}
+
 var Env Variables
 
 func Init() {

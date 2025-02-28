@@ -14,13 +14,6 @@ import (
 	"cloud.google.com/go/storage"
 )
 
-// Estrutura do JSON recebido no POST
-type MediaRequest struct {
-	Channel   string `json:"channel"`
-	CreatorID int    `json:"creator_id"`
-	MediaURL  string `json:"media_url"`
-}
-
 // 📌 **Manipulador HTTP para receber o JSON**
 func HandleMediaDownload(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
@@ -28,7 +21,7 @@ func HandleMediaDownload(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var requestData MediaRequest
+	var requestData configs.MediaRequest
 	if err := json.NewDecoder(r.Body).Decode(&requestData); err != nil {
 		http.Error(w, "Erro ao decodificar JSON", http.StatusBadRequest)
 		return
