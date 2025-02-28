@@ -9,8 +9,6 @@ import (
 )
 
 type Variables struct {
-	ProjectID                string `envconfig:"PROJECT_ID" required:"true" default:"brandlovrs-develop"`
-	Location                 string `envconfig:"LOCATION" required:"true" default:"us-central1"`
 	Port                     int    `envconfig:"PORT" required:"true" default:"8080"`
 	BucketSmartMatchCreators string `envconfig:"BUCKET_SMART_MATCH_CREATORS" required:"true" default:"smart_match_creators_test"`
 	Ctx                      context.Context
