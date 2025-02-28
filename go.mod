@@ -1,8 +1,12 @@
-module postDonwload
+module postDownload
 
 go 1.23.5
 
-require cloud.google.com/go/storage v1.50.0
+require (
+	cloud.google.com/go/storage v1.50.0
+	github.com/joho/godotenv v1.5.1
+	github.com/kelseyhightower/envconfig v1.4.0
+)
 
 require (
 	cel.dev/expr v0.16.1 // indirect
