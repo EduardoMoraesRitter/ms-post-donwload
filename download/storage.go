@@ -148,6 +148,7 @@ func MinifyVideo(inputFile string) string {
 	log.Println("Executando compressão com FFmpeg", "scale_factor", scaleFactor)
 	if err := cmd.Run(); err != nil {
 		log.Println("Erro ao executar FFmpeg:", stderr.String())
+		log.Println("Erro FFmpeg:", err)
 		return inputFile
 	}
 
