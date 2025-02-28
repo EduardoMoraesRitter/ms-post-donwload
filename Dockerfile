@@ -14,8 +14,11 @@ COPY . .
 # Compilar o binário
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o main .
 
-# Etapa 2: Criar a imagem final mínima com Alpine
+# Etapa 2: Criar a imagem final mínima com FFmpeg
 FROM alpine:latest
+
+# Instalar FFmpeg
+RUN apk add --no-cache ffmpeg
 
 # Definir diretório de trabalho no contêiner
 WORKDIR /root/

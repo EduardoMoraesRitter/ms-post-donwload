@@ -123,7 +123,7 @@ func MinifyVideo(inputFile string) string {
 
 	log.Println("Calculando fator de escala")
 	fileSizeMB := float64(len(data)) / (1024 * 1024)
-	scaleFactor := 1.0 - (math.Log10(fileSizeMB) / 3.8)
+	scaleFactor := 1.0 - (math.Log10(fileSizeMB) / 3.4)
 
 	if scaleFactor < 0.2 {
 		scaleFactor = 0.2
@@ -133,7 +133,7 @@ func MinifyVideo(inputFile string) string {
 	scaleFactor = math.Round(scaleFactor*100) / 100
 
 	cmd := exec.Command(
-		"ffmpeg",
+		"/usr/bin/ffmpeg", // Caminho absoluto do FFmpeg
 		"-i", input.Name(),
 		"-vf", fmt.Sprintf("scale=trunc(iw*%.2f/2)*2:trunc(ih*%.2f/2)*2,fps=30", scaleFactor, scaleFactor),
 		"-c:v", "libx264",
