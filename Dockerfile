@@ -6,7 +6,7 @@ WORKDIR /app
 COPY . .
 
 # Compile o aplicativo Go
-RUN go mod tidy && go build -o main .
+RUN go mod tidy && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o main .
 
 # Etapa 2: Criar a imagem final mínima
 FROM alpine:latest
