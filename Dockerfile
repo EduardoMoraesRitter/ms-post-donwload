@@ -1,21 +1,27 @@
 # Etapa 1: Construção da aplicação
-FROM golang:1.23 AS builder
+FROM golang:1.23-alpine AS builder
 
+# Definir diretório de trabalho
 WORKDIR /app
 
+# Copiar arquivos necessários
+COPY go.mod go.sum ./
+RUN go mod tidy
+
+# Copiar todo o código-fonte
 COPY . .
 
-# Compile o aplicativo Go
-RUN go mod tidy && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o main .
+# Compilar o binário
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o main .
 
 # Etapa 2: Criar a imagem final mínima
-FROM alpine:latest
+FROM scratch
 
-# Copie apenas o binário compilado da etapa anterior
-COPY --from=builder /app/main /
+# Copiar apenas o binário compilado
+COPY --from=builder /app/main /main
 
 # Expor a porta correta
 EXPOSE 8080
 
 # Comando para executar o binário
-CMD ["./main"]
+CMD ["/main"]
