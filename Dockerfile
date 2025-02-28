@@ -14,14 +14,17 @@ COPY . .
 # Compilar o binário
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o main .
 
-# Etapa 2: Criar a imagem final mínima
-FROM scratch
+# Etapa 2: Criar a imagem final mínima com Alpine
+FROM alpine:latest
+
+# Definir diretório de trabalho no contêiner
+WORKDIR /root/
 
 # Copiar apenas o binário compilado
-COPY --from=builder /app/main /main
+COPY --from=builder /app/main .
 
 # Expor a porta correta
 EXPOSE 8080
 
 # Comando para executar o binário
-CMD ["/main"]
+CMD ["./main"]
